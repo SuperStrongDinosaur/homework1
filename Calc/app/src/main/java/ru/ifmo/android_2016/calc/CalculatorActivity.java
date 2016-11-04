@@ -12,9 +12,8 @@ import android.widget.TextView;
 
 
 public class CalculatorActivity extends Activity implements View.OnClickListener {
-
-    Button button1;
-    Button button2;
+    Button[] button = new Button[10];
+/*    Button button2;
     Button button3;
     Button button4;
     Button button5;
@@ -22,7 +21,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     Button button7;
     Button button8;
     Button button9;
-    Button button0;
+    Button button0;*/
 
     Button buttonMul;
     Button buttonDiv;
@@ -35,7 +34,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
     String cnt = "";
     Long num1 = Long.valueOf(0), num2 = Long.valueOf(0);
-    Boolean isSecond = false;
+    Boolean isSecond = false, isEnd = false;
     String op;
 
     @Override
@@ -43,16 +42,16 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button0 = (Button) findViewById(R.id.button0);
-        button1 = (Button) findViewById(R.id.button1);
-        button2 = (Button) findViewById(R.id.button2);
-        button3 = (Button) findViewById(R.id.button3);
-        button4 = (Button) findViewById(R.id.button4);
-        button5 = (Button) findViewById(R.id.button5);
-        button6 = (Button) findViewById(R.id.button6);
-        button7 = (Button) findViewById(R.id.button7);
-        button8 = (Button) findViewById(R.id.button8);
-        button9 = (Button) findViewById(R.id.button9);
+        button[0] = (Button) findViewById(R.id.button0);
+        button[1] = (Button) findViewById(R.id.button1);
+        button[2] = (Button) findViewById(R.id.button2);
+        button[3] = (Button) findViewById(R.id.button3);
+        button[4] = (Button) findViewById(R.id.button4);
+        button[5] = (Button) findViewById(R.id.button5);
+        button[6] = (Button) findViewById(R.id.button6);
+        button[7] = (Button) findViewById(R.id.button7);
+        button[8] = (Button) findViewById(R.id.button8);
+        button[9] = (Button) findViewById(R.id.button9);
 
         buttonDiv = (Button) findViewById(R.id.buttonDiv);
         buttonDiff = (Button) findViewById(R.id.buttonDiff);
@@ -63,17 +62,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
         tvResult = (TextView) findViewById(R.id.tvResult);
 
-
-        button1.setOnClickListener(this);
-        button2.setOnClickListener(this);
-        button3.setOnClickListener(this);
-        button4.setOnClickListener(this);
-        button5.setOnClickListener(this);
-        button6.setOnClickListener(this);
-        button7.setOnClickListener(this);
-        button8.setOnClickListener(this);
-        button9.setOnClickListener(this);
-        button0.setOnClickListener(this);
+        for(int i = 0; i < 10; i++)
+            button[i].setOnClickListener(this);
 
 
         buttonSum.setOnClickListener(this);
@@ -106,7 +96,14 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     void addTo(Integer a) {
-        if(isSecond)
+        if(isEnd) {
+            cnt = "";
+            tvResult.setText(cnt);
+            num1 = Long.valueOf(a);
+            isEnd = false;
+
+        }
+        else if(isSecond)
             num2 = num2 * 10 + a;
         else
             num1 = num1 * 10 + a;
@@ -179,6 +176,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 break;
 
             case R.id.buttonSum:
+                isEnd = false;
                 if(num1 != 0) {
                     if(isSecond)
                         doThing();
@@ -187,6 +185,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 }
                 break;
             case R.id.buttonDiff:
+                isEnd = false;
                 if(num1 != 0) {
                     if(isSecond)
                         doThing();
@@ -195,6 +194,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 }
                 break;
             case R.id.buttonMul:
+                isEnd = false;
                 if(num1 != 0) {
                     if(isSecond)
                         doThing();
@@ -203,6 +203,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 }
                 break;
             case R.id.buttonDiv:
+                isEnd = false;
                 if(num1 != 0) {
                     if(isSecond)
                         doThing();
@@ -238,12 +239,15 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                         num1 /= num2;
                     break;
             }
-            if(!isZero)
-                tvResult.setText(cnt + "=" + num1.toString());
+            if(!isZero) {
+                tvResult.setText(cnt + " = " + num1.toString());
+//                num1 = num2 = Long.valueOf(0);
+            }
             else
                 tvResult.setText(cnt + "=INF");
             cnt = num1.toString();
-//            num1 = num2 = Long.valueOf(0);
+            num2 = Long.valueOf(0);
+            isEnd = true;
             op = "";
             isSecond = false;
         }
